@@ -8,6 +8,7 @@ https://qiita.com/Seiji_Tanaka/items/5c8041dbd7da1510fbe9
 import numpy as np
 import numpy.linalg as LA
 import matplotlib.pyplot as plt
+import math
 
 # データ数　上げると精度が上がる
 N = 10 ** 5
@@ -44,8 +45,20 @@ V_x2 = np.dot(x[1][:].T, x[1][:]) / N - (np.sum(x[1][:]) / N)**2
 V_X = np.array([[V_x1, Cov_x1x2], [Cov_x2x1, V_x2]], np.float32)
 
 # 共分散行列の固有値と固有ベクトルの表示
-eigenvector = LA.eig(V_X)
-print("共分散行列の固有値")
+print("共分散行列")
 print(V_X)
+
+w, v = LA.eig(V_X)
+print("共分散行列の固有値")
+print(w)
+
 print("共分散行列の固有ベクトル")
-print(eigenvector)
+print(v)
+
+print("誤差楕円長半径")
+ellipse_a = math.sqrt(abs(w[0]))
+print(ellipse_a)
+
+print("誤差楕円短半径")
+ellipse_b = math.sqrt(abs(w[1]))
+print(ellipse_b)
