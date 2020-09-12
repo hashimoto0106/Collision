@@ -28,17 +28,16 @@ def gaussian(x):
     return np.exp(-np.diag((x - mu)@inv@(x - mu).T)/2.0) / (np.sqrt((2 * np.pi) ** n * det))
 
 
-#2変数の平均値を指定
-mu = np.array([0,0])
-#2変数の分散共分散行列を指定
-sigma = np.array([[1,0],[0,1]])
+
+mu = np.array([0,0])  #2変数の平均値を指定
+sigma = np.array([[1,0],[0,1]])  #2変数の分散共分散行列を指定
 
 Z = gaussian(z)
 shape = X.shape
 Z = Z.reshape(shape)
 
 #二次元正規分布をplot
-fig = plt.figure(figsize = (15, 15))
+fig = plt.figure(figsize = (10, 10))
 ax = fig.add_subplot(111, projection='3d')
 
 ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm)
