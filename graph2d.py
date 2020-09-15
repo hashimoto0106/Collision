@@ -5,10 +5,11 @@ Created on Sat Sep  5 12:49:39 2020
 @author: PC
 """
 
+import math
+import scipy
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
-
 
 # graphクラス
 class graph(object):
@@ -110,7 +111,8 @@ class graph(object):
 
 
     # 楕円描画
-    def plot_ellipse(self, label, p, a, b, color = "black"):
+    # 楕円描画
+    def plot_ellipse_test2(self, label, p, a, b, color = "black"):
         t = np.linspace(-1 * np.pi, np.pi, 100) # －π～πまでの範囲
         phase = np.pi / 2                       # 位相
         x = a * np.sin(t - phase)               # 1周期分の正弦波を作成
@@ -129,7 +131,35 @@ class graph(object):
         self.axes.plot(x+p[0], y+p[1], color=color, label=label)  # プロット
 
 
+# 楕円描画
+    def plot_ellipse(self, label, p, a, b, rot, color = "black"):
+        t = np.linspace(0, 2*math.pi, 100)
+        Ell = np.array([a*np.cos(t) , b*np.sin(t)])  
+        t_rot = math.radians(rot) #rotation angle
+        R_rot = np.array([[math.cos(t_rot) , -math.sin(t_rot)],[math.sin(t_rot) , math.cos(t_rot)]])  #2-D rotation matrix
+             
+        Ell_rot = np.zeros((2,Ell.shape[1]))
+        for i in range(Ell.shape[1]):
+            Ell_rot[:,i] = np.dot(R_rot,Ell[:,i])
+#        plt.plot( Ell[0,:] , Ell[1,:],'darkorange' )     #initial ellipse
+        plt.plot( p[0]+Ell_rot[0,:] , p[1]+Ell_rot[1,:] , color = color)    #rotated ellipse
+
+
     # 楕円描画
     def plot_ellipse_test(self, p, width, height, color = "black"):
         r = patches.Ellipse(xy=(p[0], p[1]), width=width, height=height, ec='#000000', fill=False)
         self.axes.add_patch(r)
+
+
+  # 2次元ガウス分布描画
+    def multivariate_normal(self, mean, cov):
+        rate = 2.0
+        x,y = np.meshgrid(np.linspace(-cov[0][0]*rate,cov[0][0]*rate, 1000),np.linspace(-cov[1][1]*rate, cov[1][1]*rate, 1000))
+        pos = np.dstack((x,y))
+        z = scipy.stats.multivariate_normal(mean,cov).pdf(pos)
+        self.axes.contourf(x,y,z)
+        self.axes.set_xlim(-cov[0][0]*rate, cov[0][0]*rate)
+        self.axes.set_ylim(-cov[1][1]*rate, cov[1][1]*rate)
+        self.axes.set_xlabel('x')
+        self.axes.set_ylabel('y')
+        self.axes.set_aspect('equal')
